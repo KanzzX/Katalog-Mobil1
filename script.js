@@ -1,26 +1,35 @@
-// Filter kategori
+// Tombol filter
 const filterBtns = document.querySelectorAll(".btn-filter");
 const cards = document.querySelectorAll(".card");
-const search = document.getElementById("search");
+const searchInput = document.getElementById("search");
 
-filterBtns.forEach(btn => {
+filterBtns.forEach((btn) => {
   btn.addEventListener("click", () => {
-    filterBtns.forEach(b => b.classList.remove("active"));
+    const category = btn.dataset.filter;
+
+    filterBtns.forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-    applyFilters();
+
+    cards.forEach((card) => {
+      if (category === "all" || card.dataset.category === category) {
+        card.style.display = "block";
+      } else {
+        card.style.display = "none";
+      }
+    });
   });
 });
 
-// Pencarian + filter
-search.addEventListener("input", applyFilters);
+// Search produk
+searchInput.addEventListener("input", () => {
+  const query = searchInput.value.toLowerCase();
 
-function applyFilters(){
-  const active = document.querySelector(".btn-filter.active").dataset.filter;
-  const keyword = (search.value || "").toLowerCase().trim();
-
-  cards.forEach(card => {
-    const byCat = (active === "all") || (card.dataset.category === active);
-    const byKey = !keyword || card.dataset.name.toLowerCase().includes(keyword);
-    card.style.display = (byCat && byKey) ? "block" : "none";
+  cards.forEach((card) => {
+    const name = card.dataset.name.toLowerCase();
+    if (name.includes(query)) {
+      card.style.display = "block";
+    } else {
+      card.style.display = "none";
+    }
   });
-}
+});
